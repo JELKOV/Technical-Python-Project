@@ -1,8 +1,8 @@
 import smtplib
 
 def sending_email(random_quotes):
-    my_email = "jaehoahn425@gmail.com"
-    password = "tgvevtiqglctiqyh"
+    my_email = "myemail@gmail.com"
+    password = "password"
 
     connection = smtplib.SMTP("smtp.gmail.com") # 이메일 회사마다 다르다
     connection.starttls()
@@ -17,8 +17,8 @@ def sending_email(random_quotes):
 
 # import smtplib
 #
-# my_email = "jaehoahn425@gmail.com"  # 본인의 Gmail 주소
-# password = "tgvevtiqglctiqyh"  # 앱 비밀번호
+# my_email = "myemail@gmail.com"  # 본인의 Gmail 주소
+# password = "password"  # 앱 비밀번호
 #
 # # 이메일 전송
 # with smtplib.SMTP("smtp.gmail.com", port=587) as connection:  # with 구문으로 SMTP 연결
