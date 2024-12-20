@@ -13,8 +13,8 @@ import csv
 
 # 이메일 전송 함수
 def sending_birthday(letters, email_temp):
-    my_email = "jaehoahn425@gmail.com"
-    password = "tgvevtiqglctiqyh"
+    my_email = "myemail@gmail.com"
+    password = "password"
 
     with smtplib.SMTP("smtp.gmail.com") as connection:
         connection.starttls()
