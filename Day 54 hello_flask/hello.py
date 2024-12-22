@@ -16,6 +16,6 @@ def say_bye():
     return "<p>Say Good bye!</p>"
 
 
-# 4. 현재 파일이 직접 실행되었을 때 Flask 애플리케이션 실행
+# 4. 현재 파일이 직접 실행되었을 때 Flask 애플리케이션 실행함
 if __name__ == "__main__":
     app.run()
