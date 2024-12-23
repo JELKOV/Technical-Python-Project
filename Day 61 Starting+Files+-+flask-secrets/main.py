@@ -38,7 +38,7 @@ def login():
     login_form = LoginForm()  # 로그인 폼 인스턴스 생성
     # 폼 유효성 검사 후 제출 처리
     if login_form.validate_on_submit():
-        # 이메일과 비밀번호가 올바른 경우 성공 페이지 렌더링
+        # 이메일과 비밀번호가 올바른 경우 성공 페이지 렌더링 시작
         if login_form.email.data == "admin@email.com" and login_form.password.data == "12345678":
             return render_template("success.html")
         else:
