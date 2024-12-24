@@ -1,17 +1,52 @@
 {% extends 'base.html' %}
 <!--Don't forget your import here-->
-{% block title %}Add A New Cafe{% endblock %}
+{% block title %}새로운 카페 추가{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row">
     <div class="col-sm-12 col-md-8">
 
-      <h1>Add a new cafe into the database</h1>
+      <h1>새로운 카페를 추가하세요</h1>
 
+      <!-- WTForms 렌더링 -->
+      <form method="POST" action="{{ url_for('add_cafe') }}" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.cafe.label(class="form-label") }}
+          {{ form.cafe(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.location.label(class="form-label") }}
+          {{ form.location(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.open_time.label(class="form-label") }}
+          {{ form.open_time(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.close_time.label(class="form-label") }}
+          {{ form.close_time(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.coffee.label(class="form-label") }}
+          {{ form.coffee(class="form-select") }}
+        </div>
+        <div class="form-group">
+          {{ form.wifi.label(class="form-label") }}
+          {{ form.wifi(class="form-select") }}
+        </div>
+        <div class="form-group">
+          {{ form.power.label(class="form-label") }}
+          {{ form.power(class="form-select") }}
+        </div>
+        <div class="form-group text-center mt-4">
+          {{ form.submit(class="btn btn-primary btn-lg") }}
+        </div>
+      </form>
       <!-- This is where your WTForm will go -->
 
-	  <p class="space-above"><a href="#">See all cafes</a></p>
+	  <p class="space-above"><a href="{{ url_for('cafes') }}">카페 모두 보기</a></p>
 
     </div>
   </div>

@@ -7,15 +7,36 @@
   <div class="row">
     <div class="col-sm-12">
 
-      <h1>All Cafes</h1>
+      <h1>카페 목록</h1>
 
 	  <table class="table table-dark table-striped table-hover">
-          <!-- This is where you will write the code to render a Bootstrap 
-          Table that contains all the information from the 
-          cafe-data.csv file. -->
+        <thead>
+            <tr>
+                <th>카페 이름</th>
+                <th>위치</th>
+                <th>오픈 시간</th>
+                <th>마감 시간</th>
+                <th>커피 평점</th>
+                <th>와이파이</th>
+                <th>전원 콘센트</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cafe in cafes %}
+            <tr>
+                <td>{{ cafe[0] }}</td>
+                <td><a href="{{ cafe[1] }}" target="_blank">지도 보기</a></td>
+                <td>{{ cafe[2] }}</td>
+                <td>{{ cafe[3] }}</td>
+                <td>{{ cafe[4] }}</td>
+                <td>{{ cafe[5] }}</td>
+                <td>{{ cafe[6] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
   	  </table>
 
-      <p><a href="#">Return to index page</a></p>
+      <p><a href="{{ url_for('home') }}">페이지 돌아가기</a></p>
 
     </div>
   </div>

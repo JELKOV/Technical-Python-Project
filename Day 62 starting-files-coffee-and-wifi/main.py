@@ -1,8 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, SelectField
+from wtforms.validators import DataRequired, URL
 import csv
 
 '''
@@ -25,6 +25,24 @@ Bootstrap5(app)
 
 class CafeForm(FlaskForm):
     cafe = StringField('Cafe name', validators=[DataRequired()])
+    location = StringField("Location URL", validators=[DataRequired(), URL()])
+    open_time = StringField("Open Time", validators=[DataRequired()])
+    close_time = StringField("Close Time", validators=[DataRequired()])
+    coffee = SelectField(
+        "Coffee Rating",
+        choices=[("✘", "☕️ 0"), ("☕️", "☕️ 1"), ("☕️☕️", "☕️☕️ 2"), ("☕️☕️☕️", "☕️☕️☕️ 3"), ("☕️☕️☕️☕️", "☕️☕️☕️☕️ 4"), ("☕️☕️☕️☕️☕️", "☕️☕️☕️☕️☕️ 5")],
+        validators=[DataRequired()]
+    )
+    wifi = SelectField(
+        "WiFi Rating",
+        choices=[("✘", "✘ 0"), ("💪", "💪 1"), ("💪💪", "💪💪 2"), ("💪💪💪", "💪💪💪 3"), ("💪💪💪💪", "💪💪💪💪 4"), ("💪💪💪💪💪", "💪💪💪💪💪 5")],
+        validators=[DataRequired()]
+    )
+    power = SelectField(
+        "Power Outlet Rating",
+        choices=[("✘", "✘ 0"), ("🔌", "🔌 1"), ("🔌🔌", "🔌🔌 2"), ("🔌🔌🔌", "🔌🔌🔌 3"), ("🔌🔌🔌🔌", "🔌🔌🔌🔌 4"), ("🔌🔌🔌🔌🔌", "🔌🔌🔌🔌🔌 5")],
+        validators=[DataRequired()]
+    )
     submit = SubmitField('Submit')
 
 # Exercise:
@@ -42,21 +60,35 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/add')
+@app.route('/add', methods=["GET", "POST"])
 def add_cafe():
     form = CafeForm()
     if form.validate_on_submit():
-        print("True")
+        print(form.cafe.data, form.location.data, form.open_time.data, form.close_time.data, form.coffee.data,
+              form.wifi.data, form.power.data)
     # Exercise:
     # Make the form write a new row into cafe-data.csv
     # with   if form.validate_on_submit()
+        with open('cafe-data.csv', mode='a', newline='', encoding='utf-8') as csv_file:
+            csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)
+            csv_writer.writerow([
+                form.cafe.data,
+                form.location.data,
+                form.open_time.data,
+                form.close_time.data,
+                form.coffee.data,
+                form.wifi.data,
+                form.power.data,
+            ])
+        return redirect(url_for('cafes'))
     return render_template('add.html', form=form)
 
 
 @app.route('/cafes')
 def cafes():
     with open('cafe-data.csv', newline='', encoding='utf-8') as csv_file:
-        csv_data = csv.reader(csv_file, delimiter=',')
+        csv_data = csv.reader(csv_file, delimiter=',', quotechar='"')
+        next(csv_data) # 첫번째 행 건너띄기
         list_of_rows = []
         for row in csv_data:
             list_of_rows.append(row)

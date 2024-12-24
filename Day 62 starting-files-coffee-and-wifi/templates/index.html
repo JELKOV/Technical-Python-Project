@@ -4,12 +4,12 @@
 {% block content %}
 <div class="jumbotron text-center">
     <div class="container">
-  <h1 class="display-4">☕️ Coffee & Wifi 💻</h1>
-  <p class="lead">Want to work in a cafe but need power and wifi?</p>
-  <hr class="my-4">
-  <p>You've found the right place! Checkout my collection of cafes with data on power socket availability, wifi speed and coffee quality.</p>
-  <a class="btn btn-warning btn-lg" href="#" role="button">Show Me!</a>
-</div>
+        <h1 class="display-4">☕️ Coffee and Wifi 💻</h1>
+        <p class="lead">카페에서 작업하고 싶으신가요? 전원과 와이파이가 필요하다면 여기를 확인하세요!</p>
+        <hr class="my-4">
+        <p>카페의 전원 소켓, 와이파이 속도, 커피 품질에 대한 정보를 확인할 수 있습니다.</p>
+        <!-- 버튼에 Flask 라우트 연결 -->
+        <a class="btn btn-warning btn-lg" href="{{ url_for('cafes') }}" role="button">지금 확인하기!</a>
     </div>
-
+</div>
 {% endblock %}
