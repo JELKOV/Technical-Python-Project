@@ -1,5 +1,7 @@
 from turtle import Screen
 from snake import Snake
+from food import Food
+from scoreboard import Scoreboard
 import time
 
 screen = Screen()
@@ -10,6 +12,8 @@ screen.title("Snake Game")
 screen.tracer(0)
 
 snake = Snake()
+food = Food()
+scoreboard = Scoreboard()
 
 screen.listen()
 screen.onkey(snake.turn_up, "Up")
@@ -24,5 +28,24 @@ while game_is_on:
     time.sleep(0.1)  # 루프마다 0.1초 대기하여 게임 속도를 조절
 
     snake.move()
+
+    # 먹이 감지 (distance)
+    if snake.head.distance(food) < 15:
+        food.refresh()
+        snake.extend()
+        scoreboard.increase_score()
+        print("꿀꺽")
+
+    # 벽꿍 (game over)
+    if snake.head.xcor() > 290 or snake.head.xcor() < -290 or snake.head.ycor() > 290 or snake.head.ycor() < -290:
+        game_is_on = False
+        scoreboard.game_over()
+
+    # 꼬리 붇히기 (game over)
+    for segment in snake.segments[1:]:
+        if snake.head.distance(segment) < 10:
+            game_is_on = False
+            scoreboard.game_over()
+
 
 screen.exitonclick()

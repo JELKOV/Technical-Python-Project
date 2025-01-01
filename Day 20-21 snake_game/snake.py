@@ -32,6 +32,10 @@ class Snake:
         new_segment.goto(position)
         self.segments.append(new_segment)
 
+    def extend(self):
+        """점수를 먹었을때 새로운 새그먼트를 맨뒤 위치에 추가"""
+        self.add_segment(self.segments[-1].position())
+
     def move(self):
         """뱀을 앞으로 이동"""
         for seg_num in range(len(self.segments) - 1, 0, -1):
