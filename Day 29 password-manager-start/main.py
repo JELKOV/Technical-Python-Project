@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import string
+import pyperclip
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     letters = string.ascii_letters  # 대문자 + 소문자
@@ -33,6 +34,7 @@ def generate_password():
     # Entry에 생성된 비밀번호 표시
     password_entry.delete(0, END)  # 기존 내용 삭제
     password_entry.insert(0, password)  # 새로운 비밀번호 삽입
+    pyperclip.copy(password)
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_password():
     website_string = website_entry.get()
