@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+</head>
+<body>
+    {% for post in posts %} <!-- posts 리스트 반복 -->
+        {% if post.get("id") == 2 %} <!-- id가 2인 게시물만 출력 -->
+            <h1>{{ post.get("title") }}</h1> <!-- 제목 출력 -->
+            <h2>{{ post.get("subtitle") }}</h2> <!-- 부제목 출력 -->
+        {% endif %}
+    {% endfor %}
+</body>
+</html>
