@@ -8,8 +8,8 @@ MY_LAT = 126.977966
 MY_LONG = 37.566536
 
 # Gmail 계정 정보
-MY_EMAIL = "jaehoahn425@gmail.com"
-APP_PASSWORD = "tgvevtiqglctiqyh"  # 카카오톡 확인
+MY_EMAIL = "secret"
+APP_PASSWORD = "secret"  # 카카오톡 확인
 
 
 # ISS(국제우주정거장)의 현재 위치를 가져오는 함수
