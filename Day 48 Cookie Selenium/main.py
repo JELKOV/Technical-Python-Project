@@ -160,7 +160,7 @@ def buy_best_upgrade():
     buy_store_upgrades(cookie_count)
 
 # (8) 메인 실행 루프
-timeout = time.time() + 100000 * 5  # 5분 동안 실행
+timeout = time.time() + 100000 * 5  # 6일 정도 실행 테스트
 check_interval = time.time() + 5  # 5초마다 업그레이드 확인
 
 while time.time() < timeout:
