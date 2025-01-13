@@ -165,15 +165,31 @@ check_interval = time.time() + 5  # 5초마다 업그레이드 확인
 
 while time.time() < timeout:
     try:
-        # 큰 쿠키 클릭
+        # (1) 황금 쿠키 탐지 및 클릭
+        golden_cookies = driver.find_elements(By.CSS_SELECTOR, ".shimmer")
+        if golden_cookies:
+            print("[INFO] 황금 쿠키 발견! 클릭 시도 중...")
+            for golden_cookie in golden_cookies:
+                try:
+                    # 클릭 가능 대기
+                    WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable(golden_cookie)
+                    )
+                    golden_cookie.click()
+                    print("[INFO] 황금 쿠키 클릭 성공!")
+                except Exception as e:
+                    print(f"[ERROR] 황금 쿠키 클릭 실패: {e}")
+
+        # (2) 큰 쿠키 클릭
         button_cookie.click()
+
     except StaleElementReferenceException:
-        # 버튼 재참조
+        # 큰 쿠키 버튼 재참조
         button_cookie = driver.find_element(By.ID, "bigCookie")
         button_cookie.click()
 
+    # (3) 업그레이드 확인 및 구매
     if time.time() > check_interval:
-        # 업그레이드 구매 로직 실행
         buy_best_upgrade()
         check_interval = time.time() + 5
 
