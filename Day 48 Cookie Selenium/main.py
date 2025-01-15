@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,12 +8,19 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import re
 
+# ChromeDriver 경로 설정
+chrome_driver_path = "C:/resource/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+
+# ChromeDriver 서비스 초기화
+service = Service(chrome_driver_path)
+
 # Chrome 옵션 설정
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("detach", True)  # 브라우저가 코드 종료 후에도 닫히지 않도록 설정
 
 # Selenium WebDriver 초기화
-driver = webdriver.Chrome(options=chrome_options)
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
 
 # 게임 URL 접속
 url = "https://orteil.dashnet.org/cookieclicker/"
