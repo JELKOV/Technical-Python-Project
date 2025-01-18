@@ -1,0 +1,15 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+## SHEETY
+SHEETY_ID_URL = os.getenv("ENV_SHEETY_ID")
+SHEETY_TOKEN = os.getenv("ENV_SHEETY_TOKEN")
+
+## AMADEUS
+AMADEUS_APP_KEY = os.getenv("AMADEUS_APP_KEY")
+AMADEUS_APP_SECRET = os.getenv("AMADEUS_APP_SECRET")
+
+## TWILIO
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
