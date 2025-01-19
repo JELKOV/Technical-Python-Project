@@ -46,6 +46,7 @@ def search_and_update_flight_prices(sheet_data):
     for row in sheet_data["prices"]:
         city_name = row["city"]
         iata_code = row["iataCode"]
+        current_lowest_price = float(row["lowestPrice"]) if row["lowestPrice"] != "N/A" else float("inf")
 
         if not iata_code or iata_code == "N/A":
             print(f"Skipping flight search for {city_name} due to missing IATA code.")
@@ -71,20 +72,22 @@ def search_and_update_flight_prices(sheet_data):
 
             if flight_data and "data" in flight_data and flight_data["data"]:
                 price = float(flight_data["data"][0]["price"]["total"])
+                print(f"Found flight price for {city_name}: {price}")
                 if cheapest_price is None or price < cheapest_price:
                     cheapest_price = price
                     best_departure_date = departure_date
                     best_return_date = return_date
+                    print(f"cheapest Price: {cheapest_price} best_departure_date: {best_departure_date} best_return_date: {best_return_date}")
 
-        if cheapest_price:
-            print(f"Cheapest flight to {city_name}: ₩{cheapest_price}")
+            # 최저가와 기존 Google Sheet 가격 비교
+        if cheapest_price and cheapest_price < current_lowest_price:
+            print(f"New cheapest flight for {city_name}: ₩{cheapest_price}")
             print(f"Best dates: Departure - {best_departure_date}, Return - {best_return_date}")
             data_manager.update_data(row["id"], "lowestPrice", cheapest_price)
             data_manager.update_data(row["id"], "departureDate", best_departure_date)
             data_manager.update_data(row["id"], "returnDate", best_return_date)
         else:
-            print(f"No flights found for {city_name} ({iata_code}).")
-            data_manager.update_data(row["id"], "lowestPrice", "N/A")
+            print(f"No cheaper flights found for {city_name}. Keeping existing price: ₩{current_lowest_price}")
 
 
 
@@ -96,8 +99,8 @@ def notify_cheaper_flights(sheet_data):
         city_name = row["city"]
         iata_code = row["iataCode"]
         lowest_price = row["lowestPrice"]
-        departure_date = row.get("departureDate")  # Google Sheet에서 출발 날짜 가져오기
-        return_date = row.get("returnDate")  # Google Sheet에서 귀환 날짜 가져오기
+        departure_date = row["departureDate"]  # Google Sheet에서 출발 날짜 가져오기
+        return_date = row["returnDate"]  # Google Sheet에서 귀환 날짜 가져오기
 
         # IATA 코드와 최저가 정보가 없는 경우 건너뜀
         if not iata_code or iata_code == "N/A" or not lowest_price or lowest_price == "N/A":

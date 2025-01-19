@@ -24,21 +24,27 @@ class DataManager:
     def update_data(self, row_id, field_name, value):
         """
         특정 행(row)의 데이터를 업데이트하는 메서드
-        :param row_id: 업데이트할 행 ID
-        :param field_name: 업데이트할 열 이름 (예: 'lowestPrice', 'iataCode')
-        :param value: 업데이트할 값
         """
         body = {
             "price": {
-                field_name: value  # 업데이트할 필드와 값을 동적으로 설정
+                field_name: value
             }
         }
 
-        # PUT 요청을 통해 Google Sheet의 데이터를 업데이트
-        response = requests.put(
-            f"{self.url}/{row_id}",  # 행 ID를 URL에 포함
-            json=body,  # 요청 본문에 JSON 데이터 포함
-            headers=self.headers  # 인증 헤더 포함
-        )
-        response.raise_for_status()  # 요청 실패 시 예외 발생
-        print(f"Updated row {row_id} - {field_name}: {value}")  # 디버깅용 메시지 출력
+        try:
+            # URL 생성 및 디버깅용 출력
+            url = f"{self.url}/{row_id}"
+            print(f"Updating URL: {url}")
+            print(f"Request body: {body}")
+
+            # PUT 요청
+            response = requests.put(
+                url,
+                json=body,
+                headers=self.headers
+            )
+            response.raise_for_status()  # 요청 실패 시 예외 발생
+            print(f"Updated row {row_id} - {field_name}: {value}")
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTPError: {e.response.text}")  # 오류 내용 출력
+            raise
