@@ -1,61 +1,129 @@
-import requests
 from data_manager import DataManager
 from flight_search import FlightSearch
+from notification_manager import NotificationManager
 from datetime import datetime, timedelta
 
-# Datamanager 인스턴스 생성
-# Google Sheet와 통신하기 위한 DataManager 클래스 초기화
-data_manager = DataManager()
 
-# Google Sheet 데이터를 가져옴
-sheet_data = data_manager.get_data()
-
-# FlightSearch 인스턴스 생성
-# Amadeus API를 사용하여 IATA 코드를 검색하기 위한 클래스 초기화
-flight_search = FlightSearch()
-
-# 현재 날짜 및 6개월 후 날짜 계산
+# 주요 변수 초기화
 today = datetime.today()
+print(today)
 six_months_from_now = today + timedelta(days=180)
+print(six_months_from_now)
 
-# Google Sheet 데이터를 순회하며 각 도시의 IATA 코드 확인
-for row in sheet_data["prices"]:
-    if not row["iataCode"]:  # IATA 코드가 비어 있는 경우에만 처리
-        city_name = row["city"]  # 도시 이름 가져오기
-        print(f"Searching IATA code for city: {city_name}")
+# 클래스 인스턴스 초기화
+data_manager = DataManager()
+flight_search = FlightSearch()
+notification_manager = NotificationManager()
 
-        # Amadeus API를 사용하여 IATA 코드 검색
-        iata_code = flight_search.get_iata_code(city_name)
+def update_iata_codes(sheet_data):
+    """
+    Google Sheet에서 도시 이름을 기반으로 IATA 코드를 검색하고 업데이트합니다.
+    """
+    for row in sheet_data["prices"]:
+        if not row["iataCode"]:  # IATA 코드가 비어 있는 경우 처리
+            city_name = row["city"]
+            print(f"Searching IATA code for city: {city_name}")
 
-        # 검색된 IATA 코드를 sheet_data에 업데이트
-        row["iataCode"] = iata_code
+            try:
+                iata_code = flight_search.get_iata_code(city_name)
 
-        # Google Sheet에 IATA 코드 업데이트
-        data_manager.update_data(row["id"], iata_code)
+                if not iata_code or iata_code == "N/A":
+                    print(f"Invalid IATA code for {city_name}. Skipping update.")
+                    data_manager.update_data(row["id"], "iataCode", "N/A")
+                    continue
 
-    city_name = row["city"]
-    iata_code = row["iataCode"]
-    print(f"Searching flights for {city_name} ({iata_code})")
+                row["iataCode"] = iata_code
+                data_manager.update_data(row["id"], "iataCode", iata_code)
+            except Exception as e:
+                print(f"Error fetching IATA code for {city_name}: {e}")
+                data_manager.update_data(row["id"], "iataCode", "N/A")
 
-    # 항공권 검색
-    try:
-        flight_data = flight_search.search_flights(
-            origin="LON",
-            destination=iata_code,
-            date_from=today.strftime("%Y-%m-%d"),
-            date_to=six_months_from_now.strftime("%Y-%m-%d")
+
+def search_and_update_flight_prices(sheet_data):
+    """
+    출발 및 귀환 날짜를 순회하며 항공권 최저가 검색 및 업데이트
+    """
+    for row in sheet_data["prices"]:
+        city_name = row["city"]
+        iata_code = row["iataCode"]
+
+        if not iata_code or iata_code == "N/A":
+            print(f"Skipping flight search for {city_name} due to missing IATA code.")
+            continue
+
+        print(f"Searching flights for {city_name} ({iata_code})")
+
+        cheapest_price = None
+        best_departure_date = None
+        best_return_date = None
+
+        # 출발 및 귀환 날짜 순회
+        for days_offset in range(0, 180, 7):  # 6개월 동안 주 단위로 탐색
+            departure_date = (today + timedelta(days=days_offset)).strftime("%Y-%m-%d")
+            return_date = (today + timedelta(days=days_offset + 7)).strftime("%Y-%m-%d")
+
+            flight_data = flight_search.search_flights_for_date(
+                origin="ICN",
+                destination=iata_code,
+                departure_date=departure_date,
+                return_date=return_date
+            )
+
+            if flight_data and "data" in flight_data and flight_data["data"]:
+                price = float(flight_data["data"][0]["price"]["total"])
+                if cheapest_price is None or price < cheapest_price:
+                    cheapest_price = price
+                    best_departure_date = departure_date
+                    best_return_date = return_date
+
+        if cheapest_price:
+            print(f"Cheapest flight to {city_name}: ₩{cheapest_price}")
+            print(f"Best dates: Departure - {best_departure_date}, Return - {best_return_date}")
+            data_manager.update_data(row["id"], "lowestPrice", cheapest_price)
+            data_manager.update_data(row["id"], "departureDate", best_departure_date)
+            data_manager.update_data(row["id"], "returnDate", best_return_date)
+        else:
+            print(f"No flights found for {city_name} ({iata_code}).")
+            data_manager.update_data(row["id"], "lowestPrice", "N/A")
+
+
+
+def notify_cheaper_flights(sheet_data):
+    """
+    Google Sheet에 저장된 데이터를 기반으로 WhatsApp 알림을 전송합니다.
+    """
+    for row in sheet_data["prices"]:
+        city_name = row["city"]
+        iata_code = row["iataCode"]
+        lowest_price = row["lowestPrice"]
+        departure_date = row.get("departureDate")  # Google Sheet에서 출발 날짜 가져오기
+        return_date = row.get("returnDate")  # Google Sheet에서 귀환 날짜 가져오기
+
+        # IATA 코드와 최저가 정보가 없는 경우 건너뜀
+        if not iata_code or iata_code == "N/A" or not lowest_price or lowest_price == "N/A":
+            print(f"Skipping notification for {city_name} due to missing data.")
+            continue
+
+        # 알림 메시지 생성
+        message = (
+            f"Deal Alert! 🎉\n"
+            f"Price: ₩{lowest_price}\n"
+            f"From: ICN\n"
+            f"To: {iata_code} ({city_name})\n"
+            f"Departure: {departure_date}\n"
+            f"Return: {return_date}\n"
+            f"Book now to grab the deal!"
         )
 
-        # 항공권 데이터 파싱
-        if flight_data.get("data"):
-            offer = flight_data["data"][0]["price"]["total"]
-            print(f"Cheapest flight to {city_name}: £{offer}")
-            # Google Sheet 업데이트
-            data_manager.update_data(row["id"], offer)
-        else:
-            print(f"No flights found for {city_name}")
-            data_manager.update_data(row["id"], "N/A")
+        # WhatsApp 메시지 전송
+        notification_manager.send_whatsapp(message)
+        print(f"Notification sent for {city_name}!")
 
-    except Exception as e:
-        print(f"Error searching flights for {city_name}: {e}")
-        data_manager.update_data(row["id"], "N/A")
+
+
+# 실행 흐름
+if __name__ == "__main__":
+    sheet_data = data_manager.get_data()
+    update_iata_codes(sheet_data)
+    search_and_update_flight_prices(sheet_data)
+    notify_cheaper_flights(sheet_data)

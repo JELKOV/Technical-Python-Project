@@ -16,27 +16,29 @@ class DataManager:
         Google Sheet에서 데이터를 가져오는 메서드
         """
         response = requests.get(self.url, headers=self.headers)  # GET 요청
-        response.raise_for_status()  # 오류 발생 시 예외 처리
+        response.raise_for_status()  # 요청 실패 시 예외 발생
         sheet_data = response.json()  # JSON 응답 데이터를 딕셔너리로 변환
-        pprint(sheet_data)  # 데이터 출력
+        pprint(sheet_data)  # 디버깅용 데이터 출력
         return sheet_data
 
-    def update_data(self, row_id, iata_code):
+    def update_data(self, row_id, field_name, value):
         """
-        특정 행(row)의 IATA 코드를 업데이트하는 메서드
+        특정 행(row)의 데이터를 업데이트하는 메서드
+        :param row_id: 업데이트할 행 ID
+        :param field_name: 업데이트할 열 이름 (예: 'lowestPrice', 'iataCode')
+        :param value: 업데이트할 값
         """
         body = {
             "price": {
-                "iataCode": iata_code  # 업데이트할 IATA 코드 값 설정
+                field_name: value  # 업데이트할 필드와 값을 동적으로 설정
             }
         }
 
-        # PUT 요청으로 특정 행(row)의 데이터를 업데이트
+        # PUT 요청을 통해 Google Sheet의 데이터를 업데이트
         response = requests.put(
             f"{self.url}/{row_id}",  # 행 ID를 URL에 포함
             json=body,  # 요청 본문에 JSON 데이터 포함
             headers=self.headers  # 인증 헤더 포함
         )
-        response.raise_for_status()  # 오류 발생 시 예외 처리
-        print(response.text)  # 응답 본문 출력
-        print(f"Updated row {row_id} with IATA code: {iata_code}")
+        response.raise_for_status()  # 요청 실패 시 예외 발생
+        print(f"Updated row {row_id} - {field_name}: {value}")  # 디버깅용 메시지 출력
