@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, URL
@@ -20,7 +19,6 @@ This will install the packages from requirements.txt for this project.
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-Bootstrap5(app)
 
 
 class CafeForm(FlaskForm):
