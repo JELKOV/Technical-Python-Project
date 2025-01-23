@@ -2,12 +2,12 @@ from flask import Flask, render_template  # Flask와 템플릿 렌더링을 위�
 from flask_wtf import FlaskForm  # Flask-WTF 폼 클래스
 from wtforms import StringField, PasswordField, SubmitField  # WTForms의 입력 필드
 from wtforms.validators import DataRequired, Email, Length  # 입력 필드 유효성 검사를 위한 검증기
-from flask_bootstrap import Bootstrap5  # Bootstrap-Flask 모듈 임포트 (pip install bootstrap-flask)
+from flask_bootstrap5 import Bootstrap  # Bootstrap-Flask 모듈 임포트 (pip install bootstrap-flask)
 
 # Flask 애플리케이션 설정
 app = Flask(__name__)
 app.secret_key = "some secret string"  # CSRF 보호를 위한 비밀키 설정
-bootstrap = Bootstrap5(app)  # Flask 앱에 Bootstrap5 적용
+bootstrap = Bootstrap(app)  # Flask 앱에 Bootstrap5 적용
 
 # 로그인 폼 클래스 정의
 class LoginForm(FlaskForm):
