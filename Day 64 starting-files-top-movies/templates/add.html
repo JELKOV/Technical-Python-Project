@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Movie{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h1 class="heading">Add a Movie</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.title_search.label }}
+        {{ form.title_search(size=50) }}
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}

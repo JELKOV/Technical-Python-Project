@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Movie{% endblock %}
+
+{% block content %}
+<div class="select-movie-container">
+    <h1 class="select-movie-heading">Select Movie</h1>
+
+    <!-- 메시지 표시 -->
+    {% if message %}
+    <div class="select-movie-alert">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/select" class="select-movie-form">
+        <ul>
+            {% for movie in movies %}
+            <li class="select-movie-list-item">
+                <label>
+                    <input type="radio" name="movie_id" value="{{ movie['id'] }}" required class="select-movie-radio">
+
+                    <!-- 영화 포스터 -->
+                    <img
+                        src="{{ 'https://image.tmdb.org/t/p/w200' + movie['poster_path'] if movie['poster_path'] else 'https://via.placeholder.com/100x150?text=No+Image' }}"
+                        alt="Movie Poster"
+                        class="select-movie-image"
+                    >
+
+                    <!-- 영화 정보 -->
+                    <div class="select-movie-details">
+                        <span class="select-movie-title">{{ movie['title'] }}</span>
+                        <span>{{ movie['release_date'][:4] if movie['release_date'] else 'Unknown' }}</span>
+                        <span class="select-movie-description">
+                            {{ movie['overview'][:50] if movie['overview'] else 'No description available.' }}...
+                        </span>
+                    </div>
+                </label>
+            </li>
+            {% endfor %}
+        </ul>
+        <button type="submit" class="select-movie-button">Add Movie</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Movies{% endblock %}
+
+{% block content %}
+<div class="content">
+  <h1 class="heading">{{ movie.title }}</h1>
+  <p class="description">Edit Movie Rating</p>
+  <div class="edit-page-content">
+    <form class="edit-page-form" method="POST">
+      {{ form.hidden_tag() }}
+
+      <!-- Rating Field -->
+      <div>
+        <label>{{ form.rating.label }}</label>
+        {{ form.rating(class="edit-page-form-control") }}
+        {% if form.rating.errors %}
+          <ul class="error-list">
+            {% for error in form.rating.errors %}
+              <li class="error">{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <!-- Review Field -->
+      <div>
+        <label>{{ form.review.label }}</label>
+        {{ form.review(class="edit-page-form-control") }}
+        {% if form.review.errors %}
+          <ul class="error-list">
+            {% for error in form.review.errors %}
+              <li class="error">{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <!-- Submit Button -->
+      <div style="text-align: center;">
+        {{ form.submit(class="edit-page-btn-primary") }}
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
