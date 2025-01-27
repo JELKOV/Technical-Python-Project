@@ -1,0 +1,80 @@
+{% block content %}
+{% include "header.html" %}
+
+<!-- Page Header -->
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/edit-bg.jpg')"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h1>{% if is_edit %}Edit Post{% else %}New Post{% endif %}</h1>
+          <span class="subheading">
+            {% if is_edit %}
+              You're editing your post!
+            {% else %}
+              You're going to make a great blog post!
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="mb-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <!-- Form 시작 -->
+        <form method="POST">
+          {{ form.hidden_tag() }}
+
+          <!-- Title -->
+          <div class="form-group mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+          </div>
+
+          <!-- Subtitle -->
+          <div class="form-group mb-3">
+            {{ form.subtitle.label(class="form-label") }}
+            {{ form.subtitle(class="form-control") }}
+          </div>
+
+          <!-- Author -->
+          <div class="form-group mb-3">
+            {{ form.author.label(class="form-label") }}
+            {{ form.author(class="form-control") }}
+          </div>
+
+          <!-- Image URL -->
+          <div class="form-group mb-3">
+            {{ form.img_url.label(class="form-label") }}
+            {{ form.img_url(class="form-control") }}
+          </div>
+
+          <!-- Body (CKEditor) -->
+          <div class="form-group mb-3">
+            {{ form.body.label(class="form-label") }}
+            {{ form.body(class="form-control") }} <!-- CKEditor Field -->
+          </div>
+
+          <!-- Submit 버튼 -->
+          <div class="form-group mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- CKEditor 초기화 -->
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='body') }} <!-- CKEditor를 body 필드에 연결 -->
+
+{% include "footer.html" %}
+{% endblock %}
