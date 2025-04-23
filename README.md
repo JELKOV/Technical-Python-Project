@@ -29,7 +29,7 @@
 9. **Day 24**: 파일, 디렉토리 및 경로 관리
 10. **Day 25**: CSV 데이터와 Pandas 라이브러리 활용
 11. **Day 26**: 리스트 컴프리헨션 및 NATO 알파벳 프로젝트
-12. **Day 27**: Tkinter, *args, **kwargs 및 GUI 프로그래밍
+12. **Day 27**: Tkinter, args, kwargs 및 GUI 프로그래밍
 13. **Day 28**: Pomodoro 타이머 GUI 애플리케이션
 14. **Day 29**: 패스워드 매니저 GUI 프로젝트
 15. **Day 30**: 예외 처리, JSON 데이터 활용 및 패스워드 개선
