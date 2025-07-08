@@ -6,7 +6,7 @@ response = requests.get("https://web.archive.org/web/20200518073855/https://www.
 response.raise_for_status()  # HTTP 요청 상태 확인 (문제가 있을 시 예외 발생)
 soup = BeautifulSoup(response.text, 'html.parser')  # HTML 데이터를 BeautifulSoup 객체로 파싱
 
-# 1. 영화 제목 가져오기
+# 1. 영화 제목 가져오기.
 # - <h3> 태그 중 클래스가 "title"인 모든 요소를 찾아 리스트로 반환
 movies_name = soup.find_all(name="h3", class_="title")
 
