@@ -1,5 +1,3 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,6 +5,12 @@ from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import re
+# Cloudflare 보안 우회 실패 -> undetected-chromedriver로 교체
+import undetected_chromedriver as uc
+
+"""
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 
 # ChromeDriver 경로 설정
 chrome_driver_path = "C:/resource/chromedriver-win64/chromedriver-win64/chromedriver.exe"
@@ -20,7 +24,12 @@ chrome_options.add_experimental_option("detach", True)  # 브라우저가 코드
 
 # Selenium WebDriver 초기화
 driver = webdriver.Chrome(service=service, options=chrome_options)
+"""
 
+options = uc.ChromeOptions()
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("--start-maximized")
+driver = uc.Chrome(options=options)
 
 # 게임 URL 접속
 url = "https://orteil.dashnet.org/cookieclicker/"
