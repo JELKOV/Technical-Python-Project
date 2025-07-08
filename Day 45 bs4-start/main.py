@@ -9,7 +9,7 @@ soup = BeautifulSoup(contents, 'html.parser')  # 'html.parser'는 HTML 데이터
 
 # ** HTML 파싱된 데이터 확인 **
 # DOM 구조로 정리된 HTML을 보기 좋게 출력
-# print(soup.prettify())
+print(soup.prettify())
 
 # ** Title 태그 정보 가져오기 **
 # <title> 태그 전체 출력
